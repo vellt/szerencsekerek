@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Csak a Baross</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrap">
+        <h1 class="neon-title"><span>Szerencsekerék</span></h1>
+
+        <div class="layout3">
+            <!-- BAL cella -->
+            <div class="cell cell-left">
+                <div class="spinbox">
+                    <div class="neon"><span>Csak a Baross</span></div>
+                </div>
+            </div>
+
+            <!-- KÖZÉP: a kártya a kerékkel -->
+            <div class="card">
+                <div class="stage">
+                    <div class="pointer" aria-hidden="true"></div>
+                    <canvas id="wheel" width="600" height="600" aria-label="Szerencsekerék" role="img"></canvas>
+                </div>
+                <div id="out" class="result"></div>
+            </div>
+
+            <!-- JOBB cella -->
+            <div class="cell cell-right">
+                <div class="spinbox">
+                    <div class="neon"><span>Csak a Baross</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRIZE MODAL -->
+    <div id="prize-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-card" role="document" tabindex="-1">
+            <button class="modal-close" aria-label="Bezárás">×</button>
+            <!-- UGYANAZ A NEON-STÍLUS, mint a h1, csak kisebb méret -->
+            <h2 class="neon-title modal-title"><span id="prize-text">Nyeremény</span></h2>
+            <p class="modal-sub" id="prize-sub">Gratulálunk!</p>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+<!-- 
+nagy szerencsekerék felirat, az jól olvasható legyen
+nagyobb feliratok, olvashatóbbak
+erősebben villogjon
+a villogó feliratok legyenek színátmenetesek
+a betűk körvonalait emeljük ki
+pop up-ban jöjjön fel hogy mit nyertünk
+legyen egy olyan mező, hogy választhasson az ajándékok közül
+nagyon nagy nyeremény, ami sose pörög ki (pl grand casino-ba 10000 Ft kupon)
+háttérben blurben a baross suliról képet
+a szöveg forogjon, nagyítodjon-kicsinyüljön, pulzáljon, remeghet, színeket váltson véletlenszerűen, menjen fel-le
+a háttér változzon olyan módon, ahogy a kerék forog, annak a hátterére változzon
+-->

@@ -1,0 +1,362 @@
+:root {
+    --bg: #0f172a;
+    --card: #111827;
+    --text: #e5e7eb;
+    --accent: #22d3ee;
+}
+
+/* Alap layout */
+html,
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('./20210601_092129_0e126fa23e.jpg');
+    background-size: cover;        /* kitöltés aránytartással */
+    background-position: center;   /* középre igazítás */
+    background-repeat: no-repeat;  /* ne ismétlődjön */
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    user-select: none;
+    overflow-x: hidden;
+}
+
+.wrap {
+    
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+/* Középső kártya + kerék */
+.card {
+    
+    border-radius: 20px;
+    padding: 18px 18px 22px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    position: relative;
+    z-index: 10;
+}
+
+.stage {
+    
+    position: relative;
+    margin: 6px auto 10px;
+    width: 100%;
+    aspect-ratio: 1/1;
+    display: grid;
+    place-items: center;
+    touch-action: manipulation;
+}
+
+canvas {
+    
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .06), 0 8px 30px rgba(0, 0, 0, .4);
+    background: radial-gradient(circle at 30% 30%, #0b1324, #070b15 70%);
+}
+
+.pointer {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 22px solid rgb(195, 219, 39);
+    /* <-- ez lett a border-top */
+    filter: drop-shadow(0 4px 6px rgba(224, 228, 101, 0.4));
+}
+
+.result {
+    text-align: center;
+    font-size: 18px;
+    padding-top: 8px;
+    min-height: 1.8em;
+}
+
+.hint {
+    text-align: center;
+    font-size: 14px;
+    opacity: .65;
+}
+
+.accent {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* Neonos FŐCÍM */
+.neon-title,
+.neon>span {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin: 0px 0 16px;
+    font-family: 'Impact', 'Anton', 'Arial Black', system-ui, sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.05;
+    font-size: clamp(44px, 9vw, 140px);
+    color: #2c952f;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .65));
+    animation: glowStrong 0.4s ease-in-out infinite, flickerStrong 0.6s infinite, hue 8s linear infinite;
+}
+
+.neon-title{
+    color: #070b15;
+}
+
+.neon-title>span {
+    background: linear-gradient(90deg,
+            #af2c2c 0%,
+            #ffe 20%,
+            #ffd6ff 40%,
+            #fff 60%,
+            #e6f 80%,
+            #fff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    /* a gradient látszik */
+    -webkit-text-stroke: 1px #000;
+    /* vékony fekete körvonal */
+}
+
+/* 3 oszlopos rács: bal neon | kerék | jobb neon */
+.layout3 {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) auto minmax(280px, 1fr);
+    gap: clamp(24px, 4vw, 72px);
+    /* nagyobb hely a kerék és a feliratok között */
+    align-items: center;
+}
+
+/* Oldalsó cellák – középre igazítva, kilógás tiltva */
+.cell {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: inherit;
+}
+
+/* Négyzetes „pálya” a forgáshoz (a cella közepén) */
+.spinbox {
+    position: relative;
+    width: clamp(240px, 36vw, 520px);
+    /* JELENTŐSEN nagyobb */
+    aspect-ratio: 1 / 1;
+    animation: hue 10s linear infinite;
+    will-change: filter;
+}
+
+/* A teljes négyzetet kitöltő, forgó réteg */
+.spinbox .neon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* ← KÖZÉPEN! */
+    pointer-events: none;
+    mix-blend-mode: screen;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Nagyobb betűméret a szélre tett feliratoknak */
+.spinbox .neon span {
+    font-size: clamp(40px, 6vw, 128px);
+    /* nagyobb baseline */
+    max-width: 95%;
+    /* hogy átlósan is beférjen */
+}
+
+/* Bal/jobb körbeforgás (a doboz forog, a felirat középen marad) */
+.cell-left .spinbox .neon {
+    animation: spinLeft 12s linear infinite;
+}
+
+.cell-right .spinbox .neon {
+    animation: spinRight 12s linear infinite;
+}
+
+/* A felirat neon kinézete */
+.neon span {
+    display: block;
+    max-width: 90%;
+    text-align: center;
+    transform-origin: center;
+    background: linear-gradient(90deg, #fff 0%, #ffd6ff 25%, #ffe6ff 50%, #fff 75%, #ffd6ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px #000;
+    text-shadow: 0 0 6px #ff66ff, 0 0 14px #ff00cc, 0 0 24px #ff00cc, 0 0 40px #ff00cc;
+}
+
+/* Animációk */
+@keyframes spinLeft {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes spinRight {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(-360deg)
+    }
+}
+
+@keyframes glowStrong {
+
+    0%,
+    100% {
+        text-shadow: 0 0 10px #fff, 0 0 18px #fff, 0 0 28px #ff4dff, 0 0 48px #ff00cc, 0 0 78px #ff00cc, 0 0 110px #ff00cc;
+    }
+
+    50% {
+        text-shadow: 0 0 6px #fff, 0 0 10px #fff, 0 0 16px #ff99ff, 0 0 26px #ff33cc, 0 0 44px #ff33cc, 0 0 68px #ff33cc;
+    }
+}
+
+@keyframes flickerStrong {
+
+    0%,
+    13%,
+    15%,
+    17%,
+    19%,
+    61%,
+    63%,
+    100% {
+        opacity: 1
+    }
+
+    14%,
+    16% {
+        opacity: .15
+    }
+
+    18% {
+        opacity: .5
+    }
+
+    62% {
+        opacity: .35
+    }
+}
+
+@keyframes hue {
+    from {
+        filter: hue-rotate(0deg)
+    }
+
+    to {
+        filter: hue-rotate(360deg)
+    }
+}
+
+/* ===== MODAL (felugró ablak) ===== */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+}
+
+.modal.open {
+    display: block;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(2px);
+}
+
+.modal-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(.92);
+    width: min(92vw, 720px);
+    background: var(--card);
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 18px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .55);
+    padding: 24px 18px 28px;
+    animation: modalIn .22s ease-out forwards;
+    outline: none;
+}
+
+@keyframes modalIn {
+    to {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .08);
+    color: var(--text);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, .14);
+}
+
+/* A cím neon-hatása marad, de méretben visszafogottabb */
+.modal-title {
+    margin: 6px 0 8px;
+    font-size: clamp(36px, 7vw, 96px);
+    /* kisebb, mint a fő h1 */
+}
+
+/* Alfelirat */
+.modal-sub {
+    text-align: center;
+    font-size: clamp(16px, 2.6vw, 22px);
+    opacity: .85;
+}
+
+/* Mobil */
+@media (max-width: 420px) {
+    .modal-card {
+        padding: 18px 14px 22px;
+    }
+
+    .modal-close {
+        top: 6px;
+        right: 8px;
+    }
+}
