@@ -206,6 +206,29 @@ canvas {
     text-shadow: 0 0 6px #ff66ff, 0 0 14px #ff00cc, 0 0 24px #ff00cc, 0 0 40px #ff00cc;
 }
 
+.banner-wrap {
+  position: relative;
+  overflow: hidden;      /* kilógó rész ne látszódjon */
+  width: 100%;           /* teljes szélesség */
+  background: transparent;
+  color: #fff;
+  padding: 0px 0px 140px 0px;
+}
+
+.banner {
+  position: absolute;
+  white-space: nowrap;   /* egy sorban maradjon */
+  animation: scrollLeft 10s linear infinite;
+}
+
+
+
+@keyframes scrollLeft {
+  0%   { transform: translateX(100%); }   /* indul a jobb szélről */
+  100% { transform: translateX(-100%); }  /* kifut a bal szélre */
+}
+
+
 /* Animációk */
 @keyframes spinLeft {
     from {
